@@ -1,5 +1,6 @@
 
-import React, { useState } from 'react';
+import axios from 'axios';
+import React, { useState, useEffect } from 'react';
 import { Form, Button, Container, Image } from 'react-bootstrap';
 import Webcam from "react-webcam";
 
@@ -57,20 +58,33 @@ export const WebcamCapture = () => {
     );
 };
 const Profile = () => {
+    const [data, setData] = useState({});
+
+    const getData = () => {
+        axios.get('https://618ace5834b4f400177c48c0.mockapi.io/users')
+            .then((response) => {
+                setData(response.data[0]);
+            }).catch((e) => {
+                console.log(e);
+            })
+    }
+    useEffect(() => {
+        getData();
+    }, []);
     return (
         // <WebcamCapture/>
         <Container
             className='bg-light'>
-            <Image rounded src='' />
+            <Image roundedCircle src={data.avatar} onClick={() => { }} />
             <Form className='w-100'>
                 <Form.Group className="mb-3 d-flex justify-content-between w-100" >
                     <div className='w-50'>
                         <Form.Label>First Name</Form.Label>
-                        <Form.Control type="text" className='w-50' />
+                        <Form.Control type="text" className='w-50' defaultValue={data.name} />
                     </div>
                     <div className='w-50'>
                         <Form.Label>Last Name</Form.Label>
-                        <Form.Control type="text" className='w-50 me-0' />
+                        <Form.Control type="text" className='w-50 me-0' defaultValue={data.lastName} />
                     </div>
                 </Form.Group>
                 <Form.Group className="mb-3 d-flex justify-content-between w-100" >
