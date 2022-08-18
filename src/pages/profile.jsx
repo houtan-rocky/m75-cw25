@@ -11,7 +11,7 @@ import Webcam from "react-webcam";
 function MyVerticallyCenteredModal({ show,
     onHide,
     image,
-    setImage }) {
+    setImage, updatePhoto }) {
     const [webCamModalShow, setWebCamModalShow] = useState(false);
     const inputRef = useRef(null);
     console.log(image);
@@ -57,17 +57,18 @@ function MyVerticallyCenteredModal({ show,
                 setImage={setImage}
                 image={image}
                 onHide={() => setWebCamModalShow(false)}
+                updatePhoto={updatePhoto}
             />
         </>
     );
 }
 
-function WebCamModal({ show, setImage, image, onHide }) {
+function WebCamModal({ show, setImage, image, onHide, updatePhoto }) {
     return (
 
         <Modal
             show={show}
-            size="md"
+            size="lg"
             centered
             onHide={onHide}
         >
@@ -78,7 +79,7 @@ function WebCamModal({ show, setImage, image, onHide }) {
             </Modal.Header>
             <Modal.Body className='d-flex flex-column'>
                 <WebcamCapture setImage={setImage} image={image} />
-                <Button className='mt-2' variant='success' disabled={image == ''} onClick={onHide}>Submit</Button>
+                <Button className='mt-2' variant='success' disabled={image == ''} onClick={() => { onHide(); updatePhoto(); }}>Submit</Button>
             </Modal.Body>
         </Modal>
     );
@@ -91,27 +92,22 @@ const videoConstraints = {
 };
 
 export const WebcamCapture = ({ image, setImage }) => {
-
     const webcamRef = React.useRef(null);
-
-
     const capture = React.useCallback(
         () => {
             const imageSrc = webcamRef.current.getScreenshot();
             setImage(imageSrc)
         });
-
-
     return (
         <div className="d-flex justify-content-center flex-column align-items-center">
             <div>
 
                 {image == '' ? <Webcam
                     audio={false}
-                    height={200}
+                    height={500}
                     ref={webcamRef}
                     screenshotFormat="image/jpeg"
-                    width={300}
+                    width={500}
                     videoConstraints={videoConstraints}
                 /> : <img src={image} alt='' />}
             </div>
@@ -144,6 +140,11 @@ const Profile = () => {
             }).catch((e) => {
                 console.log(e);
             })
+    }
+    const updatePhoto = () => {
+        axios.put('https://618ace5834b4f400177c48c0.mockapi.io/users/1', {
+            avatar: image
+        });
     }
     useEffect(() => {
         getData();
@@ -191,6 +192,7 @@ const Profile = () => {
                 onHide={() => setModalShow(false)}
                 image={image}
                 setImage={setImage}
+                updatePhoto={updatePhoto}
             />
         </>
     )
