@@ -7,7 +7,7 @@ import './App.css';
 import Chart from "./pages/chart";
 import Login from "./pages/login";
 import Profile from "./pages/profile";
-
+import 'bootstrap/dist/css/bootstrap.min.css';
 function App() {
   return (
     <BrowserRouter>
